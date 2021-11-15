@@ -7,6 +7,9 @@
   width: 75%;
   margin-top: 16px;
 }
+.error-message p {
+  color: red;
+}
 
 .col-half-row {
   display:flex;

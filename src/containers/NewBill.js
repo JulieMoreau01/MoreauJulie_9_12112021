@@ -1,7 +1,7 @@
 
 import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
-
+let extension
 export default class NewBill {
   constructor({ document, onNavigate, firestore, localStorage }) {
     this.document = document
@@ -19,6 +19,7 @@ export default class NewBill {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
+    extension = fileName.substring(fileName.lastIndexOf('.') + 1);
     this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
@@ -30,6 +31,7 @@ export default class NewBill {
       })
   }
   handleSubmit = e => {
+    if ((extension === 'png') || (extension === 'jpg') || (extension === 'jpeg')) {
     e.preventDefault()
     console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
@@ -48,6 +50,13 @@ export default class NewBill {
     }
     this.createBill(bill)
     this.onNavigate(ROUTES_PATH['Bills'])
+    } else {
+      e.preventDefault()
+      console.log('erreur')
+      const errorMessage = document.createElement('p')
+      const addErrorMessage = document.querySelector('.error-message')
+      addErrorMessage.appendChild(errorMessage).innerHTML = 'Extention autorisé : jpg, jpeg ou png.'
+    }
   }
 
   // not need to cover this function by tests
