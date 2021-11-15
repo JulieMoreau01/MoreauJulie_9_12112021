@@ -19,6 +19,7 @@
   "type": "module",
   "dependencies": {
     "express": "^4.17.1",
+    "jest-environment-jsdom-latest": "^26.6.2",
     "jquery": "^3.5.1",
     "path": "^0.12.7"
   },
