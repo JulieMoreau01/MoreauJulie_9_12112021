@@ -5,6 +5,11 @@
   margin-right: 76px;
 }
 
+.modal-body img {
+  object-fit: cover;
+  width: 100%;
+}
+
 .content-inner {
   margin-top: 20px;
   border: solid 1px lightgrey;
@@ -57,10 +62,14 @@
 .icon-actions {
   display: flex;
   -webkit-box-pack: justify;
-  -webkit-justify-content: space-around;
+  -webkit-justify-content: flex-start;
   -ms-flex-pack: justify;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
+}
+
+.icon-actions svg {
+  margin: 0px 25px 0px 0px;
 }
 
 .table td, .table th {

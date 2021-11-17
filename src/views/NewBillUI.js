@@ -16,13 +16,13 @@ export default () => {
                   <div class="col-half">
                     <label for="expense-type" class="bold-label">Type de dépense</label>
                       <select required class="form-control blue-border" data-testid="expense-type">
-                        <option>Transports</option>
-                        <option>Restaurants et bars</option>
-                        <option>Hôtel et logement</option>
-                        <option>Services en ligne</option>
-                        <option>IT et électronique</option>
-                        <option>Equipement et matériel</option>
-                        <option>Fournitures de bureau</option>
+                        <option data-testid="val1" value="1">Transports</option>
+                        <option data-testid="val2" value="2">Restaurants et bars</option>
+                        <option data-testid="val3" value="3">Hôtel et logement</option>
+                        <option data-testid="val4" value="4">Services en ligne</option>
+                        <option data-testid="val5" value="5">IT et électronique</option>
+                        <option data-testid="val6" value="6">Equipement et matériel</option>
+                        <option data-testid="val7" value="7">Fournitures de bureau</option>
                       </select>
                   </div>
                   <div class="col-half">
