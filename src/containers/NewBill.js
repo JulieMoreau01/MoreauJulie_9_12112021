@@ -49,10 +49,9 @@ export default class NewBill {
       status: 'pending'
     }
     this.createBill(bill)
-    this.onNavigate(ROUTES_PATH['Bills'])
+    //this.onNavigate(ROUTES_PATH['Bills'])
     } else {
       e.preventDefault()
-      console.log('erreur')
       const errorMessage = document.createElement('p')
       const addErrorMessage = document.querySelector('.error-message')
       addErrorMessage.appendChild(errorMessage).innerHTML = 'Extention autorisé : jpg, jpeg ou png.'

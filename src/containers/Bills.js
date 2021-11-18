@@ -1,6 +1,7 @@
 import { ROUTES_PATH } from '../constants/routes.js'
 import { formatStatus } from "../app/format.js"
 import Logout from "./Logout.js"
+import { formatDate } from '../app/format.js'
 import download_blue from '../assets/svg/download_blue.js'
 
 export default class {
