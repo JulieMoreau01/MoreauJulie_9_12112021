@@ -1,8 +1,6 @@
 import { ROUTES_PATH } from '../constants/routes.js'
 import { formatStatus } from "../app/format.js"
 import Logout from "./Logout.js"
-import { formatDate } from '../app/format.js'
-import download_blue from '../assets/svg/download_blue.js'
 
 export default class {
   constructor({ document, onNavigate, firestore, localStorage }) {
@@ -12,14 +10,9 @@ export default class {
     const buttonNewBill = document.querySelector(`button[data-testid="btn-new-bill"]`)
     if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
-    //const iconDownload = document.querySelectorAll('#download')
-    //console.log(iconDownload)
     if (iconEye) iconEye.forEach(icon => {
       icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
     })
-    // if (iconDownload) iconDownload.forEach(icon => {
-    //   icon.addEventListener('click', (e) => this.handleClickIconDownload(icon))
-    // })
     new Logout({ document, localStorage, onNavigate })
   }
 
@@ -29,17 +22,9 @@ export default class {
 
   handleClickIconEye = (icon) => {
     const billUrl = icon.getAttribute("data-bill-url")
-    // const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
     $('#modaleFile').find(".modal-body").html(`<img src=${billUrl} />`)
     $('#modaleFile').modal('show')
   }
-
-  // handleClickIconDownload = (icon) => {
-  //   const billUrl = icon.getAttribute("data-bill-url")
-  //   const filename = `${billUrl}`
-  //   console.log(filename)
-  //   download(filename, 'lapin');
-  // }
 
   // not need to cover this function by tests
   getBills = () => {
@@ -55,7 +40,6 @@ export default class {
             try {
               return {
                 ...doc.data(),
-                //date: formatDate(doc.data().date),
                 date: doc.data().date,
                 status: formatStatus(doc.data().status)
               }

@@ -20,20 +20,19 @@ export default class NewBill {
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     extension = fileName.substring(fileName.lastIndexOf('.') + 1);
-    this.firestore
-      .storage
-      .ref(`justificatifs/${fileName}`)
-      .put(file)
-      .then(snapshot => snapshot.ref.getDownloadURL())
-      .then(url => {
-        this.fileUrl = url
-        this.fileName = fileName
-      })
+    // this.firestore
+    //   .storage.ref(`justificatifs/${fileName}`)
+    //   .put(file)
+    //   .then(snapshot => snapshot.ref.getDownloadURL())
+    //   .then(url => {
+    //     this.fileUrl = url
+    //     this.fileName = fileName
+    //})
   }
   handleSubmit = e => {
     if ((extension === 'png') || (extension === 'jpg') || (extension === 'jpeg')) {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
+    //console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
@@ -49,7 +48,7 @@ export default class NewBill {
       status: 'pending'
     }
     this.createBill(bill)
-    //this.onNavigate(ROUTES_PATH['Bills'])
+    this.onNavigate(ROUTES_PATH['Bills'])
     } else {
       e.preventDefault()
       const errorMessage = document.createElement('p')

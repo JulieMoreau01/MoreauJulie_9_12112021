@@ -1,5 +1,4 @@
 export const formatDate = (dateStr) => {
-  console.log(dateStr)
   if ((dateStr !== "") && (dateStr.length === 10)) {
     const date = new Date(dateStr)
     const ye = new Intl.DateTimeFormat('fr', { year: 'numeric' }).format(date)

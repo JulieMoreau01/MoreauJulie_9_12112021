@@ -6,6 +6,9 @@ import userEvent from '@testing-library/user-event'
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import { ROUTES } from "../constants/routes"
+import { localStorageMock } from "../__mocks__/localStorage";
+import firebase from "../__mocks__/firebase.js";
+import firestore from "../app/Firestore.js";
 
 describe("Given I am connected as an employee", () => {
   beforeAll(() => {
@@ -82,20 +85,21 @@ describe("Given I am connected as an employee", () => {
       expect(commentary.value).toMatch('commentary')
     })
     test("the input file", () => {
-      const inputFile = screen.getByTestId("file")
-      const file = new File(['hello'], 'hello.png', { type: 'image/png' })
-      userEvent.upload(inputFile, file)
-      expect(inputFile.files).toHaveLength(1)
-      //   const onNavigate = (pathname) => {
-      //     document.body.innerHTML = ROUTES({ pathname })
-      //   }
-      //   const newBill = new NewBill({
-      //     document, onNavigate, firestore: null, localStorage: window.localStorage
-      //   })
-      // const handleChangeFile = jest.fn(() => newBill.handleChangeFile)
-      // inputFile.addEventListener('change', handleChangeFile)
-      // expect(handleChangeFile).toHaveBeenCalled()
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname })
+      }
+      const newBill = new NewBill({
+        document, onNavigate, firestore: firestore, localStorage: window.localStorage
+      })
+      const file = screen.getByTestId("file")
+      const handleChangeFile = jest.fn(newBill.handleChangeFile);
+      file.addEventListener('change', handleChangeFile)
+      const fileName = new File(['hello'], 'hello.png', { type: 'image/png' })
+      userEvent.upload(file, fileName)
+      expect(file.files).toHaveLength(1)
+      expect(handleChangeFile).toHaveBeenCalled()
     })
+    
     test("Submit the form with good extension", () => {
       const extension = 'png'
       const onNavigate = (pathname) => {
@@ -123,14 +127,46 @@ describe("Given I am connected as an employee", () => {
       })
       const form = screen.getByTestId('form-new-bill')
       const handleSubmit = jest.fn((e) => newBill.handleSubmit(e))
+      newBill.createBill = jest.fn();
 
       form.addEventListener("submit", handleSubmit)
       fireEvent.submit(form) 
       if ((extension === 'png') || (extension === 'jpg') || (extension === 'jpeg')) {
         expect(handleSubmit).toHaveBeenCalledTimes(1)
+        expect(newBill.createBill).toHaveBeenCalledTimes(1)
       } else {
         expect(screen.getAllByText("Extention autorisé : jpg, jpeg ou png.")).toBeTruthy()
       }
     })
   })
 })
+
+//   // test d'intégration POST
+// describe("Given I am a user connected as Employee", () => {
+//   describe("When I navigate to NewBill", () => {
+//     test("fetches bills from mock API POST", async () => {
+//        const getSpy = jest.spyOn(firebase, "post")
+//        const bills = await firebase.post()
+//        expect(getSpy).toHaveBeenCalledTimes(1)
+//        expect(bills.data.length).toBe(4)
+//     })
+//     test("fetches bills from an API and fails with 404 message error", async () => {
+//       firebase.post.mockImplementationOnce(() =>
+//         Promise.reject(new Error("Erreur 404"))
+//       )
+//       const html = DashboardUI({ error: "Erreur 404" })
+//       document.body.innerHTML = html
+//       const message = await screen.getByText(/Erreur 404/)
+//       expect(message).toBeTruthy()
+//     })
+//     test("fetches messages from an API and fails with 500 message error", async () => {
+//       firebase.post.mockImplementationOnce(() =>
+//         Promise.reject(new Error("Erreur 500"))
+//       )
+//       const html = DashboardUI({ error: "Erreur 500" })
+//       document.body.innerHTML = html
+//       const message = await screen.getByText(/Erreur 500/)
+//       expect(message).toBeTruthy()
+//     })
+//   })
+// })
