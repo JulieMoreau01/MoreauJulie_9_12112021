@@ -3,6 +3,10 @@
     "test": "jest --coverage --noStackTrace --silent"
   },
   "jest": {
+    "coverageReporters": [
+      "text",
+      "cobertura"
+    ],
     "verbose": false,
     "setupFiles": [
       "./setup-jest.js"
