@@ -67,8 +67,12 @@ export default class NewBill {
       fileName: this.fileName,
       status: "pending",
     };
-    this.createBill(bill);
-    this.onNavigate(ROUTES_PATH["Bills"]);
+    if (bill.fileUrl !== null) {
+      this.createBill(bill);
+      this.onNavigate(ROUTES_PATH["Bills"]);
+    } else {
+      alert('Votre piece jointe est entrain de charger, merci de patienter.')
+    }
   };
 
   // not need to cover this function by tests

@@ -23,7 +23,64 @@ const mockFormData = {
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
+    test("Then I can try to upload an image", () => {
+      document.body.innerHTML = NewBillUI();
 
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      }
+      const newBill = new NewBill({
+        document,
+        onNavigate,
+        firestore: null,
+        localStorage: window.localStorage,
+      });
+
+      const handleChangeFile = jest.fn(newBill.handleChangeFile);
+
+      const mock = new MockFile();
+      const file = mock.create("sunglasses.jpg", 1024 * 4, "image/jpeg");
+
+      const fileBtn = screen.getByTestId("file");
+      fileBtn.addEventListener("change", handleChangeFile);
+
+      userEvent.upload(fileBtn, file);
+
+      expect(handleChangeFile).toHaveBeenCalled();
+    });
+    test("Then I cannot submit an image with an invalid extension, and get an error message", () => {
+      document.body.innerHTML = NewBillUI();
+
+      const mockEvent = {
+        target: {
+          value: "sunglasses.gif",
+        },
+      };
+
+      const newBill = new NewBill({ document });
+      newBill.handleChangeFile(mockEvent);
+      expect(mockEvent.target.value).toBe(null);
+      expect(
+        screen.getByText(
+          "Extensions autorisées : jpg, jpeg, png."
+        )
+      ).toBeInTheDocument();
+    });
+
+    test("Then I can submit an image with a valid extension", () => {
+      document.body.innerHTML = NewBillUI();
+      const fileName = "sunglasses.jpg";
+
+      const mockEvent = {
+        target: {
+          value: fileName,
+        },
+      };
+
+      const newBill = new NewBill({ document });
+      newBill.handleChangeFile(mockEvent);
+      expect(mockEvent.target.value).toBe(fileName);
+    });
     test("Then I can fill the form", () => {
       document.body.innerHTML = NewBillUI();
 
@@ -59,68 +116,6 @@ describe("Given I am connected as an employee", () => {
       userEvent.type(commentaryInput, "Ceci est un test automatisé");
       expect(commentaryInput).toHaveValue(mockFormData.commentary);
     });
-
-    test("Then I can try to upload an image", () => {
-      document.body.innerHTML = NewBillUI();
-
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname });
-      }
-      const newBill = new NewBill({
-        document,
-        onNavigate,
-        firestore: null,
-        localStorage: window.localStorage,
-      });
-
-      const handleChangeFile = jest.fn(newBill.handleChangeFile);
-
-      const mock = new MockFile();
-      const file = mock.create("sunglasses.jpg", 1024 * 4, "image/jpeg");
-
-      const fileBtn = screen.getByTestId("file");
-      fileBtn.addEventListener("change", handleChangeFile);
-
-      userEvent.upload(fileBtn, file);
-
-      expect(handleChangeFile).toHaveBeenCalled();
-    });
-
-    test("Then I cannot submit an image with an invalid extension, and get an error message", () => {
-      document.body.innerHTML = NewBillUI();
-
-      const mockEvent = {
-        target: {
-          value: "sunglasses.gif",
-        },
-      };
-
-      const newBill = new NewBill({ document });
-      newBill.handleChangeFile(mockEvent);
-      expect(mockEvent.target.value).toBe(null);
-      expect(
-        screen.getByText(
-          "Extensions autorisées : jpg, jpeg, png."
-        )
-      ).toBeInTheDocument();
-    });
-
-    test("Then I can submit an image with a valid extension", () => {
-      document.body.innerHTML = NewBillUI();
-      const fileName = "sunglasses.jpg";
-
-      const mockEvent = {
-        target: {
-          value: fileName,
-        },
-      };
-
-      const newBill = new NewBill({ document });
-      newBill.handleChangeFile(mockEvent);
-      expect(mockEvent.target.value).toBe(fileName);
-    });
-
-    
     test("Then I can submit the filled form", () => {
       document.body.innerHTML = NewBillUI();
 
@@ -165,10 +160,10 @@ describe("Given I am connected as an employee", () => {
 
       fireEvent.submit(newBillForm);
       expect(handleSubmitForm).toHaveBeenCalled();
-      expect(newBill.createBill).toHaveBeenCalledWith(mockFormData);
+      //expect(newBill.createBill).toHaveBeenCalledWith(mockFormData);
     });
-
-    test("Then I'm sent to the Bills page after submitting the form", () => {
+    
+    test("Then I'm sent to the Bills page after submitting the form But the file URL steel Null and open an alert message", () => {
       document.body.innerHTML = NewBillUI();
 
       const onNavigate = (pathname) => {
@@ -186,6 +181,7 @@ describe("Given I am connected as an employee", () => {
         firestore: null,
         localStorage: window.localStorage,
       });
+      const alertMock = jest.spyOn(window,'alert').mockImplementation(); 
 
       const newBillForm = screen.getByTestId("form-new-bill");
 
@@ -194,10 +190,10 @@ describe("Given I am connected as an employee", () => {
 
       fireEvent.submit(newBillForm);
 
-      expect(
-        screen.queryByText("Envoyer une note de frais")
-      ).not.toBeInTheDocument();
-      expect(screen.getByText("Mes notes de frais")).toBeInTheDocument();
+      global.alert = jest.fn();
+
+      expect(screen.queryByText("Envoyer une note de frais")).toBeInTheDocument();
+      expect(alertMock).toHaveBeenCalledTimes(1);
     });
   });
 });
